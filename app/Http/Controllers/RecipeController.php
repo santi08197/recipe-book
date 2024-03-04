@@ -10,6 +10,7 @@ use App\Models\RecipeIngredient;
 
 class RecipeController extends Controller
 {
+       
     public function addRecipe(Request $request){
         $recipeArray = $request->input('recipe');
 
@@ -56,5 +57,28 @@ class RecipeController extends Controller
             $price += $ingredient['gross_amount'] * $ingredient['unit_price']; 
         }
         return $price;
+    }
+    
+    public function addProduct(Request $request){
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'unit' => 'required|string',
+            'unit_price' => 'required|numeric',
+        ]);
+
+        try{
+            $igredient = new Ingredient();
+			$igredient->fill($validated);
+			$igredient->save();
+
+			return response()->json($igredient,201);
+			
+			
+		}catch(Exception $e){
+			return response()->json([
+				'message' => $e->getMessage(),
+	        ], 401);
+		}
+        
     }
 }
