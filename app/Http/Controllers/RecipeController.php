@@ -21,6 +21,13 @@ class RecipeController extends Controller
 
         if($recipe->save()){
             foreach($recipeArray['ingredients'] as $ingredientArray){
+
+                if(isset($ingredientArray['childRecipeId'])){
+                    $childRecipe = Recipe::find($ingredientArray['childRecipeId']);
+                    $recipe->children()->attach($childRecipe['id']);
+                    continue;
+                }
+                
                 $ingredient = new Ingredient();
                 $ingredient->name = $ingredientArray['name'];
                 $ingredient->unit_price = $ingredientArray['unit_price'];
@@ -41,6 +48,11 @@ class RecipeController extends Controller
     protected function getPrice($ingredients){
         $price = 0;
         foreach($ingredients as $ingredient){
+            if(isset($ingredient['childRecipeId'])){
+                $childRecipe = Recipe::find($ingredient['childRecipeId']);
+                $price += $childRecipe['price'] * $ingredient['portions'];
+                continue;
+            }
             $price += $ingredient['gross_amount'] * $ingredient['unit_price']; 
         }
         return $price;
