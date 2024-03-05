@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Recipe;
 use App\Models\Ingredient;
 use App\Models\RecipeIngredient;
+use Illuminate\Support\Facades\DB;
 
 
 class RecipeController extends Controller
@@ -33,38 +34,49 @@ class RecipeController extends Controller
     public function addRecipe(Request $request){
         $recipeArray = $request->input('recipe');
 
-        [$price, $sellingPrice] = $this->getPrice($recipeArray['ingredients'], $recipeArray['sale_percentage']);
-        $recipe = new Recipe();
-        $recipe->name = $recipeArray['name'];
-        $recipe->price = $price;
-        $recipe->selling_price = $sellingPrice;
-        $recipe->sale_percentage = $recipeArray['sale_percentage'];
+        try{
+			DB::beginTransaction();
+
+            [$price, $sellingPrice] = $this->getPrice($recipeArray['ingredients'], $recipeArray['sale_percentage']);
+            $recipe = new Recipe();
+            $recipe->name = $recipeArray['name'];
+            $recipe->price = $price;
+            $recipe->selling_price = $sellingPrice;
+            $recipe->sale_percentage = $recipeArray['sale_percentage'];
 
 
-        if($recipe->save()){
-            foreach($recipeArray['ingredients'] as $ingredientArray){
+            if($recipe->save()){
+                foreach($recipeArray['ingredients'] as $ingredientArray){
 
-                if(isset($ingredientArray['childRecipeId'])){
-                    $childRecipe = Recipe::find($ingredientArray['childRecipeId']);
-                    $recipe->children()->attach($childRecipe['id']);
-                    continue;
+                    if(isset($ingredientArray['childRecipeId'])){
+                        $childRecipe = Recipe::find($ingredientArray['childRecipeId']);
+                        $recipe->children()->attach($childRecipe['id']);
+                        continue;
+                    }
+                    
+                    $ingredient = new Ingredient();
+                    $ingredient->name = $ingredientArray['name'];
+                    $ingredient->unit_price = $ingredientArray['unit_price'];
+                    $ingredient->unit = $ingredientArray['unit'];
+                    $ingredient->save();
+
+                    $recipeIngredient = new RecipeIngredient();
+                    $recipeIngredient->recipe_id = $recipe->id;
+                    $recipeIngredient->ingredient_id = $ingredient->id;
+                    $recipeIngredient->gross_amount = $ingredientArray['gross_amount'];
+                    $recipeIngredient->net_amount = $ingredientArray['net_amount'];
+                    $recipeIngredient->save();
                 }
-                
-                $ingredient = new Ingredient();
-                $ingredient->name = $ingredientArray['name'];
-                $ingredient->unit_price = $ingredientArray['unit_price'];
-                $ingredient->unit = $ingredientArray['unit'];
-                $ingredient->save();
-
-                $recipeIngredient = new RecipeIngredient();
-                $recipeIngredient->recipe_id = $recipe->id;
-                $recipeIngredient->ingredient_id = $ingredient->id;
-                $recipeIngredient->gross_amount = $ingredientArray['gross_amount'];
-                $recipeIngredient->net_amount = $ingredientArray['net_amount'];
-                $recipeIngredient->save();
             }
+
+            DB::commit();
+            return response()->json($recipe,201);
+        }catch(Exception $e){
+			DB::rollBack();
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 401);
         }
-		return response()->json($recipe,201);
     }
 
     protected function getPrice($ingredients, $salePercentage){
