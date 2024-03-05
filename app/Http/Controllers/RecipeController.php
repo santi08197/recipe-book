@@ -33,10 +33,12 @@ class RecipeController extends Controller
     public function addRecipe(Request $request){
         $recipeArray = $request->input('recipe');
 
-        $price = $this->getPrice($recipeArray['ingredients']);
+        [$price, $sellingPrice] = $this->getPrice($recipeArray['ingredients'], $recipeArray['sale_percentage']);
         $recipe = new Recipe();
         $recipe->name = $recipeArray['name'];
         $recipe->price = $price;
+        $recipe->selling_price = $sellingPrice;
+        $recipe->sale_percentage = $recipeArray['sale_percentage'];
 
 
         if($recipe->save()){
@@ -65,17 +67,23 @@ class RecipeController extends Controller
 		return response()->json($recipe,201);
     }
 
-    protected function getPrice($ingredients){
+    protected function getPrice($ingredients, $salePercentage){
         $price = 0;
+        $priceAux = 0;
+        $sellingPriceChilRecipe = 0;
         foreach($ingredients as $ingredient){
             if(isset($ingredient['childRecipeId'])){
                 $childRecipe = Recipe::find($ingredient['childRecipeId']);
                 $price += $childRecipe['price'] * $ingredient['portions'];
+                $sellingPriceChilRecipe +=  $childRecipe['selling_price'] * $ingredient['portions'];
                 continue;
             }
-            $price += $ingredient['gross_amount'] * $ingredient['unit_price']; 
+            $price += $ingredient['gross_amount'] * $ingredient['unit_price'];
+            $priceAux = $price;
         }
-        return $price;
+
+        $sellingPrice = $priceAux + ($priceAux * $salePercentage / 100) + $sellingPriceChilRecipe; 
+        return [$price,$sellingPrice];
     }
     
     public function addIngredient(Request $request){
@@ -130,6 +138,7 @@ class RecipeController extends Controller
         $ingredient = Ingredient::find($recipeIngredient['ingredient_id']);
         $recipe = Recipe::findOrFail($recipe_id);
         $recipe->price += $recipeIngredient['gross_amount'] * $ingredient->unit_price;
+        $recipe->selling_price = $recipe->price + ($recipe->price * $recipe->sale_percentage / 100);
         return $recipe->save();
     }
 }
