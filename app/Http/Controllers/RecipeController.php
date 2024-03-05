@@ -10,7 +10,7 @@ use App\Models\RecipeIngredient;
 
 class RecipeController extends Controller
 {
-       
+ 
     public function addRecipe(Request $request){
         $recipeArray = $request->input('recipe');
 
@@ -80,5 +80,37 @@ class RecipeController extends Controller
 	        ], 401);
 		}
         
+    }
+
+    public function addRecipeIngredient(Request $request, $recipe_id){
+        $validated = $request->validate([
+            'ingredient_id' => 'required|int',
+            'gross_amount' => 'required|numeric',
+            'net_amount' => 'required|numeric',
+        ]);
+
+        try{
+            $recipeIngredient = new RecipeIngredient();
+			$recipeIngredient->fill($validated);
+			$recipeIngredient->recipe_id = $recipe_id;
+            if($recipeIngredient->save()){
+                $this->updateRecipePrice($recipe_id, $validated);
+            }
+
+			return response()->json($recipeIngredient,201);
+			
+		}catch(Exception $e){
+			return response()->json([
+				'message' => $e->getMessage(),
+	        ], 401);
+		}
+        
+    }
+    
+    protected function updateRecipePrice($recipe_id, $recipeIngredient){
+        $ingredient = Ingredient::find($recipeIngredient['ingredient_id']);
+        $recipe = Recipe::findOrFail($recipe_id);
+        $recipe->price += $recipeIngredient['gross_amount'] * $ingredient->unit_price;
+        return $recipe->save();
     }
 }
