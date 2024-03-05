@@ -10,7 +10,26 @@ use App\Models\RecipeIngredient;
 
 class RecipeController extends Controller
 {
- 
+    public function getRecipes(Request $request){
+        
+        $validSorts = ['id', 'name', 'price', 'created_at', 'updated_at'];
+
+        $sort = $request->input('sort');
+        if ($sort && !in_array($sort, $validSorts)) {
+            return response()->json(['error' => 'Invalid sort parameter'], 400);
+        }
+
+        $recipe = Recipe::with('ingredients')
+            ->when($sort, function ($query, $sort) {
+                $direction = substr($sort, 0, 1) === '-' ? 'desc' : 'asc';
+                $field = ltrim($sort, '-');
+                return $query->orderBy($field, $direction);
+            })
+            ->get();
+
+        return $recipe;
+    }
+
     public function addRecipe(Request $request){
         $recipeArray = $request->input('recipe');
 
