@@ -7,6 +7,7 @@ use App\Models\Recipe;
 use App\Models\Ingredient;
 use App\Models\RecipeIngredient;
 use Illuminate\Support\Facades\DB;
+use App\Http\Requests\RecipeRequest;
 
 
 class RecipeController extends Controller
@@ -31,9 +32,8 @@ class RecipeController extends Controller
         return $recipe;
     }
 
-    public function addRecipe(Request $request){
-        $recipeArray = $request->input('recipe');
-
+    public function addRecipe(RecipeRequest $request){
+        $recipeArray = $request->safe()->all();
         try{
 			DB::beginTransaction();
 
