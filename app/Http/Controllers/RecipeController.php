@@ -78,7 +78,7 @@ class RecipeController extends Controller
         return $price;
     }
     
-    public function addProduct(Request $request){
+    public function addIngredient(Request $request){
         $validated = $request->validate([
             'name' => 'required|string',
             'unit' => 'required|string',
