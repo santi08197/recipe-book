@@ -7,6 +7,18 @@ use App\Models\Ingredient;
 
 class IngredientController extends Controller
 {
+
+    public function getIngredients(Request $request)
+    {
+        try{
+            $ingredients = Ingredient::all();
+            return response()->json($ingredients,200);
+        }catch(Exception $e){
+            return response("Failed", 500);
+        }
+    }
+
+
     public function addIngredients(Request $request){
         $validated = $request->validate([
             '*.name' => 'required|string',
