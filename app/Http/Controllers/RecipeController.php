@@ -91,7 +91,7 @@ class RecipeController extends Controller
         $validated = $request->validate([
             '*.name' => 'required|string',
             '*.unit' => 'required|string',
-            '*.unit_price' => 'required|numeric',
+            '*.unit_price' => 'required|numeric|min:0',
         ]);
 
         try{
@@ -117,9 +117,9 @@ class RecipeController extends Controller
 
     public function addRecipeIngredient(Request $request, $recipe_id){
         $validated = $request->validate([
-            'ingredient_id' => 'required|int',
-            'gross_amount' => 'required|numeric',
-            'net_amount' => 'required|numeric',
+            'ingredient_id' => 'required|int|exists:App\Models\Ingredient,id',
+            'gross_amount' => 'required|numeric|min:0',
+            'net_amount' => 'required|numeric|min:0',
         ]);
 
         try{
