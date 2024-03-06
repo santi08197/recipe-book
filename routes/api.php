@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RecipeController;
+use App\Http\Controllers\IngredientController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,5 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/recipes', [RecipeController::class, 'getRecipes']);
 Route::post('/recipes', [RecipeController::class, 'addRecipe']);
-Route::post('/ingredients', [RecipeController::class, 'addIngredients']);
+Route::post('/ingredients', [IngredientController::class, 'addIngredients']);
 Route::post('/recipes/{recipe_id}/ingredients', [RecipeController::class, 'addRecipeIngredient']);
