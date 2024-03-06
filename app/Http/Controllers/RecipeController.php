@@ -119,4 +119,27 @@ class RecipeController extends Controller
         $recipe->selling_price = $recipe->price + ($recipe->price * $recipe->sale_percentage / 100);
         return $recipe->save();
     }
+
+    public function addRecipeChlidToRecipe(Request $request,$idParentRecipe){
+        
+        try{
+            $validated = $request->validate([
+                'childRecipeId' => 'required|int|exists:App\Models\Recipe,id',
+                'portions' => 'required|int|min:0',
+            ]);
+
+            $childRecipe = Recipe::findOrFail($validated['childRecipeId']);
+            $parentRecipe = Recipe::findOrFail($idParentRecipe);
+
+            $parentRecipe->price += $childRecipe->price * $validated['portions'];  
+            $parentRecipe->selling_price += $childRecipe->selling_price * $validated['portions'];
+            $parentRecipe->save();  
+
+            return response()->json($parentRecipe,201);
+        }catch(Exception $e){
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 401);
+        }
+    }
 }

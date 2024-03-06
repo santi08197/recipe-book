@@ -25,3 +25,4 @@ Route::get('/ingredients', [IngredientController::class, 'getIngredients']);
 Route::post('/recipes', [RecipeController::class, 'addRecipe']);
 Route::post('/ingredients', [IngredientController::class, 'addIngredients']);
 Route::post('/recipes/{recipe_id}/ingredients', [RecipeController::class, 'addRecipeIngredient']);
+Route::post('/recipes/{recipe_id}/child', [RecipeController::class, 'addRecipeChlidToRecipe']);
