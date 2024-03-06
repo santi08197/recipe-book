@@ -142,4 +142,13 @@ class RecipeController extends Controller
             ], 401);
         }
     }
+
+    public function getProfitability(){
+        $mostProfitableRecipe = Recipe::getMostProfitableRecipe();
+        $leastProfitableRecipe = Recipe::getLeastProfitableRecipe();
+        return response()->json([
+            'most_profitable_recipe' => 'La receta mas rentable es la de '.$mostProfitableRecipe['name'].' con una ganancia de '.$mostProfitableRecipe['gain'],
+            'least_profitable_recipe' => 'La receta menos rentable es la de '.$leastProfitableRecipe['name'].' con una ganancia de '.$leastProfitableRecipe['gain'],
+        ]);
+    }
 }
