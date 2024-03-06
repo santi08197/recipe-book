@@ -37,38 +37,46 @@ class RecipeController extends Controller
         try{
 			DB::beginTransaction();
 
-            [$price, $sellingPrice] = $this->getPrice($recipeArray['ingredients'], $recipeArray['sale_percentage']);
             $recipe = new Recipe();
             $recipe->name = $recipeArray['name'];
-            $recipe->price = $price;
-            $recipe->selling_price = $sellingPrice;
+            
             $recipe->sale_percentage = $recipeArray['sale_percentage'];
 
-
+            $price = 0;
+            $priceAux = 0;
+            $sellingPriceChild = 0;
+            
             if($recipe->save()){
-                foreach($recipeArray['ingredients'] as $ingredientArray){
-
-                    if(isset($ingredientArray['childRecipeId'])){
-                        $childRecipe = Recipe::find($ingredientArray['childRecipeId']);
+                foreach($recipeArray['ingredients'] as $ingredient){
+                    if(isset($ingredient['childRecipeId'])){
+                        $childRecipe = Recipe::find($ingredient['childRecipeId']);
                         $recipe->children()->attach($childRecipe['id']);
+
+                        $price += $childRecipe['price'] * $ingredient['portions'];
+                        $sellingPriceChild += $childRecipe['selling_price'] * $ingredient['portions'];
+                        
                         continue;
                     }
-                    
-                    $ingredient = new Ingredient();
-                    $ingredient->name = $ingredientArray['name'];
-                    $ingredient->unit_price = $ingredientArray['unit_price'];
-                    $ingredient->unit = $ingredientArray['unit'];
-                    $ingredient->save();
 
                     $recipeIngredient = new RecipeIngredient();
                     $recipeIngredient->recipe_id = $recipe->id;
-                    $recipeIngredient->ingredient_id = $ingredient->id;
-                    $recipeIngredient->gross_amount = $ingredientArray['gross_amount'];
-                    $recipeIngredient->net_amount = $ingredientArray['net_amount'];
+                    $recipeIngredient->ingredient_id = $ingredient['ingredient_id'];
+                    $recipeIngredient->gross_amount = $ingredient['gross_amount'];
+                    $recipeIngredient->net_amount = $ingredient['net_amount'];
                     $recipeIngredient->save();
+                    
+                    $unitPrice = Ingredient::where('id', $ingredient['ingredient_id'])->value('unit_price');
+                    $price += $ingredient['gross_amount'] * $unitPrice;
+                    $priceAux = $price;
                 }
             }
 
+            $sellingPrice = $priceAux + ($priceAux * $recipeArray['sale_percentage'] / 100) + $sellingPriceChild;
+            
+            $recipe->selling_price = $sellingPrice;
+            $recipe->price = $price;
+            $recipe->save();
+            
             DB::commit();
             return response()->json($recipe,201);
         }catch(Exception $e){
@@ -77,25 +85,6 @@ class RecipeController extends Controller
                 'message' => $e->getMessage(),
             ], 401);
         }
-    }
-
-    protected function getPrice($ingredients, $salePercentage){
-        $price = 0;
-        $priceAux = 0;
-        $sellingPriceChilRecipe = 0;
-        foreach($ingredients as $ingredient){
-            if(isset($ingredient['childRecipeId'])){
-                $childRecipe = Recipe::find($ingredient['childRecipeId']);
-                $price += $childRecipe['price'] * $ingredient['portions'];
-                $sellingPriceChilRecipe +=  $childRecipe['selling_price'] * $ingredient['portions'];
-                continue;
-            }
-            $price += $ingredient['gross_amount'] * $ingredient['unit_price'];
-            $priceAux = $price;
-        }
-
-        $sellingPrice = $priceAux + ($priceAux * $salePercentage / 100) + $sellingPriceChilRecipe; 
-        return [$price,$sellingPrice];
     }
     
     public function addIngredient(Request $request){
@@ -147,9 +136,9 @@ class RecipeController extends Controller
     }
     
     protected function updateRecipePrice($recipe_id, $recipeIngredient){
-        $ingredient = Ingredient::find($recipeIngredient['ingredient_id']);
+        $unitPrice = Ingredient::where('id', $recipeIngredient['ingredient_id'])->value('unit_price');
         $recipe = Recipe::findOrFail($recipe_id);
-        $recipe->price += $recipeIngredient['gross_amount'] * $ingredient->unit_price;
+        $recipe->price += $recipeIngredient['gross_amount'] * $unitPrice;
         $recipe->selling_price = $recipe->price + ($recipe->price * $recipe->sale_percentage / 100);
         return $recipe->save();
     }
