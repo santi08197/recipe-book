@@ -17,7 +17,7 @@ class RecipeController extends Controller
         $validSorts = ['id', 'name', 'price', 'created_at', 'updated_at'];
 
         $sort = $request->input('sort');
-        if ($sort && !in_array($sort, $validSorts)) {
+        if ($sort && !in_array(str_replace("-", "", $sort), $validSorts)) {
             return response()->json(['error' => 'Invalid sort parameter'], 400);
         }
 
@@ -115,8 +115,9 @@ class RecipeController extends Controller
     protected function updateRecipePrice($recipe_id, $recipeIngredient){
         $unitPrice = Ingredient::where('id', $recipeIngredient['ingredient_id'])->value('unit_price');
         $recipe = Recipe::findOrFail($recipe_id);
-        $recipe->price += $recipeIngredient['gross_amount'] * $unitPrice;
-        $recipe->selling_price = $recipe->price + ($recipe->price * $recipe->sale_percentage / 100);
+        $priceNewIngredient = $recipeIngredient['gross_amount'] * $unitPrice; 
+        $recipe->price += $priceNewIngredient;
+        $recipe->selling_price += $priceNewIngredient + ($priceNewIngredient * $recipe->sale_percentage / 100);
         return $recipe->save();
     }
 
