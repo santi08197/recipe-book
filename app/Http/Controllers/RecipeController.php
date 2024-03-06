@@ -87,20 +87,25 @@ class RecipeController extends Controller
         }
     }
     
-    public function addIngredient(Request $request){
+    public function addIngredients(Request $request){
         $validated = $request->validate([
-            'name' => 'required|string',
-            'unit' => 'required|string',
-            'unit_price' => 'required|numeric',
+            '*.name' => 'required|string',
+            '*.unit' => 'required|string',
+            '*.unit_price' => 'required|numeric',
         ]);
 
         try{
-            $igredient = new Ingredient();
-			$igredient->fill($validated);
-			$igredient->save();
+            $ingredients = [];
 
-			return response()->json($igredient,201);
-			
+            foreach($validated as $ingredientData){
+                $ingredient = new Ingredient();
+                $ingredient->fill($ingredientData);
+                $ingredient->save();
+
+                $ingredients[] = $ingredient;
+            }
+
+			return response()->json($ingredients,201);
 			
 		}catch(Exception $e){
 			return response()->json([
