@@ -1,0 +1,409 @@
+{
+	"info": {
+		"_postman_id": "b1316895-fc65-49a3-b11f-ccfb2dc4a00c",
+		"name": "recipe-book",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30941550"
+	},
+	"item": [
+		{
+			"name": "Ingredients Recipes",
+			"item": [
+				{
+					"name": "Ingredients Salsa Picante",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"name\": \"Chiles Habaneros\",\n        \"unit\": \"g\",\n        \"unit_price\": 0.50\n    },\n    {\n        \"name\": \"Tomates\",\n        \"unit\": \"g\",\n        \"unit_price\": 1.50\n    },\n    {\n        \"name\": \"Ajo\",\n        \"unit\": \"g\",\n        \"unit_price\": 0.50\n    },\n    {\n        \"name\": \"Vinagre\",\n        \"unit\": \"ml\",\n        \"unit_price\": 0.30\n    },\n    {\n        \"name\": \"Sal\",\n        \"unit\": \"g\",\n        \"unit_price\": 0.10\n    }\n]\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/ingredients",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ingredients Tacos de Carne",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n    \"name\": \"Carne de Res\",\n    \"unit\": \"g\",\n    \"unit_price\": 4\n    },\n    {\n    \"name\": \"Tortillas\",\n    \"unit\": \"unidades\",\n    \"unit_price\": 5\n    },\n    {\n    \"name\": \"Cebolla\",\n    \"unit\": \"unidad/es\",\n    \"unit_price\": 5\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/ingredients",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ingredient Pimiento",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"name\": \"Pimiento\",\n        \"unit\": \"g\",\n        \"unit_price\": 0.75\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/ingredients",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ingredients Ensalada de Pollo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n    \"name\": \"Lechuga\",\n    \"unit\": \"g\",\n    \"unit_price\": 1.50\n    },\n    {\n    \"name\": \"Pollo\",\n    \"unit\": \"g\",\n    \"unit_price\": 6.75\n    },\n    {\n    \"name\": \"Crutones\",\n    \"unit\": \"g\",\n    \"unit_price\": 1.20\n    },\n    {\n    \"name\": \"Aceite de Oliva\",\n    \"unit\": \"ml\",\n    \"unit_price\": 0.80\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/ingredients",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"ingredients"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recipes",
+			"item": [
+				{
+					"name": "Recipe Salsa Picante",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Salsa Picante\",\n    \"sale_percentage\": 40,\n    \"ingredients\": [\n    {\n        \"ingredient_id\": 158,\n        \"gross_amount\": \"200\",\n        \"net_amount\": \"180\"\n    },\n    {\n        \"ingredient_id\": 159,\n        \"gross_amount\": \"200\",\n        \"net_amount\": \"150\"\n    },\n    {\n        \"ingredient_id\": 160,\n        \"gross_amount\": \"50\",\n        \"net_amount\": \"45\"\n    },\n    {\n        \"ingredient_id\": 161,\n        \"gross_amount\": \"100\",\n        \"net_amount\": \"90\"\n    },\n    {\n        \"ingredient_id\": 162,\n        \"gross_amount\": \"10\",\n        \"net_amount\": \"10\"\n    }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/recipes",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recipe Tacos de Carne",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Tacos de Carne\",\n    \"sale_percentage\": 50,\n    \"ingredients\": [\n      {\n        \"ingredient_id\": 163,\n        \"gross_amount\": 500,\n        \"net_amount\": 400\n      },\n      {\n        \"ingredient_id\": 164,\n        \"gross_amount\": 10,\n        \"net_amount\": 10\n      },\n      {\n        \"ingredient_id\": 165,\n        \"gross_amount\": 1,\n        \"net_amount\": 1\n      },\n      {\n        \"childRecipeId\": 77,\n        \"portions\": 2\n      }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/recipes",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recipe Ensalada de Pollo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ensalada de Pollo\",\n    \"sale_percentage\": 30,\n    \"ingredients\": [\n      {\n        \"ingredient_id\": 167,\n        \"gross_amount\": 300,\n        \"net_amount\": 200\n      },\n      {\n        \"ingredient_id\": 168,\n        \"gross_amount\": 300,\n        \"net_amount\": 250\n      },\n      {\n        \"ingredient_id\": 169,\n        \"gross_amount\": 100,\n        \"net_amount\": 90\n      },\n      {\n        \"ingredient_id\": 170,\n        \"gross_amount\": 60,\n        \"net_amount\": 40\n      }\n    ]\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/recipes",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"recipes"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Recipe Ingredient",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ingredient_id\": 166,\n    \"gross_amount\": 100,\n    \"net_amount\": 90\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/recipes/78/ingredients",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"recipes",
+						"78",
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Recipes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/recipes?sort=price",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"recipes"
+					],
+					"query": [
+						{
+							"key": "sort",
+							"value": "price"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ingredients",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/ingredients",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"ingredients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Profitability",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/recipes/profitability",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"recipes",
+						"profitability"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Child Recipe",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"childRecipeId\": 77,\n    \"portions\": 1\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/recipes/79/child",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"recipes",
+						"79",
+						"child"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
